@@ -4,201 +4,195 @@ import { siteConfig } from '@/data/siteConfig';
 import { getCollection } from 'astro:content';
 
 const articles = await getCollection('articles', ({ data }) => !data.draft);
-const sorted = articles
-  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
-  .slice(0, 9);
-
-const c = siteConfig.colors;
-
-// Dynamic category tag styles
-const tagCSS = siteConfig.categories.map((cat, i) => {
-  const p = siteConfig.catTagPalette[i % siteConfig.catTagPalette.length];
-  return `.art-tag.${cat.id}{background:${p.bg};color:${p.color}}`;
-}).join('');
-
-const pageCSS = `
-.tl-main{position:relative;padding-bottom:60px}
-.tl-main .tl-news-float{position:absolute;top:80px;right:50px;border-left:5px solid ${c.primary};padding:20px}
-.news-float-title{font-weight:700;margin-bottom:10px}
-.news_1,.news_2,.news_3{font-size:13px;color:${c.textSecondary};line-height:1.8}
-
-.logo-container{text-align:center;overflow:hidden}
-.logo-zone{display:flex;justify-content:center;align-items:center;margin-top:50px}
-.logo{width:128px;height:128px;background-image:url(/images/window_img.png);background-repeat:no-repeat;background-size:cover;border-radius:24px;margin:0 auto}
-.logo-title{font-size:32px;font-weight:700;margin-top:5px;color:${c.textPrimary}}
-.logo-title img{vertical-align:middle}
-
-.download-container{overflow:hidden;display:flex;justify-content:center}
-.download-group{margin-top:40px;display:flex;justify-content:center;flex-wrap:wrap}
-.tl-main .download-group-item{margin-bottom:70px}
-.download-group-item-img-zone{display:flex;justify-content:center;cursor:pointer;align-items:center}
-.download_item_video_window{position:relative}
-.down_load_img{margin:10px 0}
-.download-group-item-content{display:flex;justify-content:center}
-.download-group-item-content a{color:${c.primary};font-weight:700;text-decoration:none}
-
-.myButton{background-color:${c.primary};border-radius:20px;border:1px solid ${c.btnBorder};display:inline-block;cursor:pointer;color:#fff;font-size:20px;padding:16px 31px;text-decoration:none;text-shadow:0 1px 0 rgba(107,212,253,0.55);transition:background .2s}
-.myButton:hover{background-color:${c.primaryHover}}
-.myButton:active{position:relative;top:1px}
-.myButton img{display:block;width:100%;max-width:350px;height:auto}
-
-.introduce-container{margin-bottom:50px}
-.tl-main .introduce-title{text-align:center;font-weight:700;font-size:20px;margin-bottom:30px;color:${c.textPrimary}}
-.introduce-main{display:flex;justify-content:center}
-.introduce-group{display:flex;flex-wrap:wrap;width:100%;justify-content:space-between;max-width:900px}
-.introduce-group-item{width:27%;margin:20px 0}
-.introduce-group-item-img-zone{display:flex;justify-content:center;align-items:center}
-.introduce-group-item-img{width:160px;height:160px}
-.introduce-group-item-img img{width:100%}
-.introduce-group-item-title{text-align:center;color:${c.featTitle};font-size:20px;margin-top:10px;margin-bottom:5px}
-.introduce-group-item-content{text-align:center;font-size:15px;margin-bottom:20px;color:${c.textSecondary}}
-.introduce-group-item-content img{vertical-align:middle;width:70px;height:19px}
-
-/* ── Articles section (after features, matches lccygs grid) ── */
-.articles{max-width:1100px;margin:0 auto;padding:0 24px 60px}
-.articles h2{text-align:center;font-size:22px;font-weight:700;margin-bottom:36px;color:${c.textPrimary}}
-.art-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
-.art-card{background:${c.bg};border-radius:12px;overflow:hidden;border:1px solid #e8ecf1;transition:transform .2s,box-shadow .2s;text-decoration:none;color:inherit;display:block}
-.art-card:hover{transform:translateY(-3px);box-shadow:0 8px 30px rgba(0,0,0,.08)}
-.art-card-body{padding:20px}
-.art-card .art-tag{display:inline-block;font-size:11px;font-weight:600;padding:3px 10px;border-radius:6px;margin-bottom:10px}
-${tagCSS}
-.art-card h3{font-size:15px;font-weight:700;line-height:1.4;margin-bottom:8px;color:${c.textPrimary};display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.art-card p{font-size:13px;color:${c.textMuted};line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-
-@media(max-width:768px){
-  .tl-main .tl-news-float{display:none}
-  .logo-title{font-size:22px}
-  .download-group{flex-direction:column;align-items:center}
-  .introduce-group-item{width:45%}
-  .art-grid{grid-template-columns:repeat(2,1fr)}
-}
-@media(max-width:480px){
-  .introduce-group-item{width:100%}
-  .art-grid{grid-template-columns:1fr}
-}
-`;
+const sorted = articles.sort((a, b) => b.data.date.getTime() - a.data.date.getTime()).slice(0, 8);
+const primary = '#E65100';
+const bgCard = '#f5f7fa';
+const textPrimary = '#1e293b';
 ---
 
 <BaseLayout>
-  <div class="tl-main">
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
 
-    <!-- ── 更新浮窗 ── -->
-    <div class="tl-news-float">
-      <div class="news-float-title news-float-time">{siteConfig.newsFloat.date}</div>
-      <div class="news-float-title news-float-lable">{siteConfig.newsFloat.label}</div>
-      {siteConfig.newsFloat.items.map((item, i) => (
-        <div class={`news_${i + 1}`}>{item}</div>
-      ))}
-    </div>
-
-    <!-- ── Logo 区 ── -->
-    <div class="logo-container">
-      <div class="logo-zone">
-        <div class="logo"></div>
+  <!-- ── Hero ── -->
+  <section class="text-center" style="background:linear-gradient(135deg,#E65100 0%,#BF360C 50%,#3E2723 100%);padding:80px 24px 64px">
+    <div class="max-w-3xl mx-auto text-white">
+      <h1 class="text-4xl md:text-5xl font-bold mb-4">班迪录屏 Bandicam 中文教程 — 从入门到精通</h1>
+      <p class="text-lg md:text-xl opacity-90 mb-4">最全面的 Bandicam 班迪录屏中文教程站。屏幕录制、游戏录制、4K高清录屏、H265编码、多音轨录制、参数优化全覆盖。让每一帧画面都完美呈现。</p>
+      <div class="flex flex-wrap justify-center gap-4 mb-6">
+        <a href="https://www.bandicam.cn/screen-recorder" target="_blank" rel="nofollow noopener" class="bg-white text-orange-700 font-bold px-8 py-3 rounded-full text-lg hover:shadow-xl transition">⬇ 官方免费下载</a>
+        <a href="/guide/bandicam-newbie-guide/" class="bg-green-500 text-white font-bold px-8 py-3 rounded-full text-lg hover:bg-green-600 transition">📖 新手入门教程</a>
       </div>
-      <h1 class="logo-title">{siteConfig.logo.text}<br><img src={`/images/${siteConfig.logo.img}`} width={siteConfig.logo.imgWidth} height={siteConfig.logo.imgHeight} alt={siteConfig.logo.text} /></h1>
+      <div class="flex flex-wrap justify-center gap-2 text-sm opacity-80">
+        <span class="bg-white/10 px-3 py-1 rounded">🖥 Windows 11/10/8/7</span>
+        <span class="bg-white/10 px-3 py-1 rounded">🎮 4K@144FPS</span>
+        <span class="bg-white/10 px-3 py-1 rounded">🎥 H265编码</span>
+        <span class="bg-white/10 px-3 py-1 rounded">🔊 多音轨</span>
+      </div>
     </div>
+  </section>
 
-    <!-- ── 下载区 ── -->
-    <div class="download-container">
-      <div class="download-group">
-        {siteConfig.downloadButtons.map(btn => (
-          <div class="download-group-item">
-            <div class="download-group-item-img-zone download_item_video_window">
-              <img class="down_load_img" src={`/images/${btn.img}`} loading="lazy" alt="" />
+  <!-- ── 四种录制模式 ── -->
+  <section class="max-w-6xl mx-auto px-6 py-16">
+    <h2 class="text-3xl font-bold text-center mb-4" style={`color:${textPrimary}`}>四种录制模式，覆盖所有场景</h2>
+    <p class="text-center text-gray-500 mb-12">Bandicam 提供四大录制模式，满足从网课到游戏直播的全部需求</p>
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-5">
+      <div class="bg-white rounded-2xl p-6 border text-center hover:shadow-lg transition">
+        <div class="text-5xl mb-4">🖥</div>
+        <h3 class="text-lg font-bold mb-2">屏幕录制</h3>
+        <p class="text-sm text-gray-600">录制整个桌面、指定区域或单个窗口。适合教程制作、网课录制、会议记录。</p>
+      </div>
+      <div class="bg-white rounded-2xl p-6 border text-center hover:shadow-lg transition">
+        <div class="text-5xl mb-4">🎮</div>
+        <h3 class="text-lg font-bold mb-2">游戏录制</h3>
+        <p class="text-sm text-gray-600">兼容 DirectX/Vulkan/OpenGL，4K 144FPS 不卡顿。支持所有主流游戏平台。</p>
+      </div>
+      <div class="bg-white rounded-2xl p-6 border text-center hover:shadow-lg transition">
+        <div class="text-5xl mb-4">📹</div>
+        <h3 class="text-lg font-bold mb-2">设备录制</h3>
+        <p class="text-sm text-gray-600">摄像头、采集卡、HDMI设备，支持画中画叠加屏幕画面，一站式录制。</p>
+      </div>
+      <div class="bg-white rounded-2xl p-6 border text-center hover:shadow-lg transition">
+        <div class="text-5xl mb-4">🎤</div>
+        <h3 class="text-lg font-bold mb-2">音频录制</h3>
+        <p class="text-sm text-gray-600">纯音频录制、多音轨分离（系统声+麦克风），方便后期混音编辑。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 十大核心功能 ── -->
+  <section style={`background:${bgCard};padding:64px 24px`}>
+    <div class="max-w-6xl mx-auto">
+      <h2 class="text-3xl font-bold text-center mb-12" style={`color:${textPrimary}`}>Bandicam 十大核心功能</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div class="bg-white rounded-xl p-5 border flex gap-4"><span class="text-3xl flex-shrink-0">🎬</span><div><h4 class="font-bold mb-1">4K超清录制</h4><p class="text-xs text-gray-500">3840×2160 分辨率，最高 480FPS 帧率，画面丝滑无残影。</p></div></div>
+        <div class="bg-white rounded-xl p-5 border flex gap-4"><span class="text-3xl flex-shrink-0">⚡</span><div><h4 class="font-bold mb-1">硬件加速编码</h4><p class="text-xs text-gray-500">H264(NVENC/AMD VCE) + H265 + AV1，文件小画质好，对性能影响极低。</p></div></div>
+        <div class="bg-white rounded-xl p-5 border flex gap-4"><span class="text-3xl flex-shrink-0">🔊</span><div><h4 class="font-bold mb-1">双音轨录制</h4><p class="text-xs text-gray-500">系统声音和麦克风分别输出为独立音轨，后期混音随心所欲。</p></div></div>
+        <div class="bg-white rounded-xl p-5 border flex gap-4"><span class="text-3xl flex-shrink-0">⏰</span><div><h4 class="font-bold mb-1">计划录制</h4><p class="text-xs text-gray-500">设定开始/结束时间自动录制。直播、网课、会议自动录，不会错过任何内容。</p></div></div>
+        <div class="bg-white rounded-xl p-5 border flex gap-4"><span class="text-3xl flex-shrink-0">✏️</span><div><h4 class="font-bold mb-1">实时绘图标注</h4><p class="text-xs text-gray-500">录制过程中在画面上画线、画框、加文字。做教学视频的神器。</p></div></div>
+        <div class="bg-white rounded-xl p-5 border flex gap-4"><span class="text-3xl flex-shrink-0">🖱</span><div><h4 class="font-bold mb-1">鼠标点击特效</h4><p class="text-xs text-gray-500">显示鼠标点击动画和高亮光标效果，观众一目了然每一步操作。</p></div></div>
+        <div class="bg-white rounded-xl p-5 border flex gap-4"><span class="text-3xl flex-shrink-0">🖼</span><div><h4 class="font-bold mb-1">摄像头画中画</h4><p class="text-xs text-gray-500">在录制屏幕的同时叠加摄像头画面（脸或其他），适合出镜教学。</p></div></div>
+        <div class="bg-white rounded-xl p-5 border flex gap-4"><span class="text-3xl flex-shrink-0">📏</span><div><h4 class="font-bold mb-1">自定义水印</h4><p class="text-xs text-gray-500">添加图片或文字水印，保护原创内容。支持自定义位置和透明度。</p></div></div>
+        <div class="bg-white rounded-xl p-5 border flex gap-4"><span class="text-3xl flex-shrink-0">💾</span><div><h4 class="font-bold mb-1">文件小巧</h4><p class="text-xs text-gray-500">同等画质下视频文件比同类软件小 30%-50%，省磁盘空间到飞起。</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 对比表 ── -->
+  <section class="max-w-6xl mx-auto px-6 py-16">
+    <h2 class="text-3xl font-bold text-center mb-4" style={`color:${textPrimary}`}>Bandicam vs 竞品：一表定胜负</h2>
+    <p class="text-center text-gray-500 mb-10">不吹不黑，用数据说话</p>
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm border-collapse bg-white rounded-xl overflow-hidden border">
+        <thead style={`background:${primary};color:#fff`}>
+          <tr><th class="p-4 text-left">对比维度</th><th class="p-4">Bandicam</th><th class="p-4">OBS Studio</th><th class="p-4">嗨格式录屏</th><th class="p-4">万兴喵影</th></tr>
+        </thead>
+        <tbody>
+          <tr class="border-b"><td class="p-4 font-bold">上手难度</td><td class="p-4 text-center text-green-600">⭐ 极低</td><td class="p-4 text-center text-yellow-600">⭐⭐⭐ 较高</td><td class="p-4 text-center text-green-600">⭐ 低</td><td class="p-4 text-center text-yellow-600">⭐⭐ 中</td></tr>
+          <tr class="border-b bg-gray-50"><td class="p-4 font-bold">最高画质</td><td class="p-4 text-center font-bold text-green-600">4K@480FPS</td><td class="p-4 text-center">4K@120FPS</td><td class="p-4 text-center">4K@60FPS</td><td class="p-4 text-center">4K@60FPS</td></tr>
+          <tr class="border-b"><td class="p-4 font-bold">游戏录制</td><td class="p-4 text-center font-bold text-green-600">🥇 最优</td><td class="p-4 text-center">🟡 中等</td><td class="p-4 text-center">🔴 弱</td><td class="p-4 text-center">🟡 中等</td></tr>
+          <tr class="border-b bg-gray-50"><td class="p-4 font-bold">多音轨录制</td><td class="p-4 text-center font-bold text-green-600">✅</td><td class="p-4 text-center">✅</td><td class="p-4 text-center">❌</td><td class="p-4 text-center">❌</td></tr>
+          <tr class="border-b"><td class="p-4 font-bold">硬件编码</td><td class="p-4 text-center font-bold text-green-600">NVENC/AMF/QSV</td><td class="p-4 text-center">NVENC/AMF/QSV</td><td class="p-4 text-center">🟡 部分支持</td><td class="p-4 text-center">🟡 部分支持</td></tr>
+          <tr class="border-b bg-gray-50"><td class="p-4 font-bold">计划录制</td><td class="p-4 text-center font-bold text-green-600">✅</td><td class="p-4 text-center">❌</td><td class="p-4 text-center">✅</td><td class="p-4 text-center">❌</td></tr>
+          <tr class="border-b"><td class="p-4 font-bold">实时绘图</td><td class="p-4 text-center font-bold text-green-600">✅</td><td class="p-4 text-center">❌</td><td class="p-4 text-center">🟡 基础</td><td class="p-4 text-center">❌</td></tr>
+          <tr><td class="p-4 font-bold">价格</td><td class="p-4 text-center font-bold text-green-600">永久买断 ~¥300</td><td class="p-4 text-center text-green-600">免费开源</td><td class="p-4 text-center text-red-600">¥98/年</td><td class="p-4 text-center text-red-600">¥199/年</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ── 使用场景 ── -->
+  <section style={`background:${bgCard};padding:64px 24px`}>
+    <div class="max-w-6xl mx-auto">
+      <h2 class="text-3xl font-bold text-center mb-12" style={`color:${textPrimary}`}>适合你的场景</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="bg-white rounded-2xl p-8 text-center border hover:shadow-lg transition">
+          <div class="text-5xl mb-4">🎓</div>
+          <h3 class="text-xl font-bold mb-3">在线教育</h3>
+          <p class="text-sm text-gray-600 mb-3">录制网课、教学视频、微课。支持画中画出镜、实时标注讲解、鼠标点击特效。</p>
+          <div class="text-xs text-gray-400 space-y-1"><div>✅ 摄像头+屏幕同录</div><div>✅ 实时绘图标注</div><div>✅ 鼠标动画引导</div></div>
+        </div>
+        <div class="bg-white rounded-2xl p-8 text-center border hover:shadow-lg transition">
+          <div class="text-5xl mb-4">🎮</div>
+          <h3 class="text-xl font-bold mb-3">游戏主播</h3>
+          <p class="text-sm text-gray-600 mb-3">录制精彩操作、游戏攻略、直播复盘。4K高画质低性能消耗，录制不拖慢游戏帧率。</p>
+          <div class="text-xs text-gray-400 space-y-1"><div>✅ 4K@144FPS</div><div>✅ 硬件加速编码</div><div>✅ 双音轨录制</div></div>
+        </div>
+        <div class="bg-white rounded-2xl p-8 text-center border hover:shadow-lg transition">
+          <div class="text-5xl mb-4">💼</div>
+          <h3 class="text-xl font-bold mb-3">企业办公</h3>
+          <p class="text-sm text-gray-600 mb-3">会议录制、产品演示、操作培训。计划录制自动录制，多音轨便于后续整理。</p>
+          <div class="text-xs text-gray-400 space-y-1"><div>✅ 计划定时录制</div><div>✅ 窗口/区域录制</div><div>✅ 自定义水印</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 参数优化速查 ── -->
+  <section class="max-w-6xl mx-auto px-6 py-16">
+    <h2 class="text-3xl font-bold text-center mb-4" style={`color:${textPrimary}`}>参数设置速查表</h2>
+    <p class="text-center text-gray-500 mb-10">不同场景的最佳参数配置，一图对照</p>
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm border-collapse bg-white rounded-xl overflow-hidden border">
+        <thead style={`background:${primary};color:#fff`}>
+          <tr><th class="p-4 text-left">场景</th><th class="p-4">编码器</th><th class="p-4">分辨率</th><th class="p-4">FPS</th><th class="p-4">品质</th><th class="p-4">文件大小</th></tr>
+        </thead>
+        <tbody>
+          <tr class="border-b"><td class="p-4 font-bold">🖥 桌面教程</td><td class="p-4 text-center">H264</td><td class="p-4 text-center">1920×1080</td><td class="p-4 text-center">30</td><td class="p-4 text-center">80</td><td class="p-4 text-center text-green-600">~200MB/10min</td></tr>
+          <tr class="border-b bg-gray-50"><td class="p-4 font-bold">🎮 游戏录制</td><td class="p-4 text-center">H265(NVENC)</td><td class="p-4 text-center">2560×1440</td><td class="p-4 text-center">60</td><td class="p-4 text-center">90</td><td class="p-4 text-center text-green-600">~400MB/10min</td></tr>
+          <tr class="border-b"><td class="p-4 font-bold">🎓 网课录制</td><td class="p-4 text-center">H264</td><td class="p-4 text-center">1920×1080</td><td class="p-4 text-center">30</td><td class="p-4 text-center">70</td><td class="p-4 text-center text-green-600">~150MB/10min</td></tr>
+          <tr class="border-b bg-gray-50"><td class="p-4 font-bold">🎥 4K高清</td><td class="p-4 text-center">H265</td><td class="p-4 text-center">3840×2160</td><td class="p-4 text-center">60</td><td class="p-4 text-center">100</td><td class="p-4 text-center">~1GB/10min</td></tr>
+          <tr><td class="p-4 font-bold">💼 会议录制</td><td class="p-4 text-center">H264</td><td class="p-4 text-center">1920×1080</td><td class="p-4 text-center">25</td><td class="p-4 text-center">60</td><td class="p-4 text-center text-green-600">~100MB/10min</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ── 最新教程 ── -->
+  <section style={`background:${bgCard};padding:64px 24px`}>
+    <div class="max-w-6xl mx-auto">
+      <div class="flex justify-between items-center mb-10">
+        <h2 class="text-3xl font-bold" style={`color:${textPrimary}`}>📝 最新教程</h2>
+        <a href="/articles/" class="text-sm font-semibold no-underline" style={`color:${primary}`}>查看全部 →</a>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {sorted.map((article) => (
+          <a href={`/${article.id}/`} class="flex gap-4 bg-white rounded-xl p-5 border hover:shadow-md transition no-underline" style="color:inherit">
+            <div class="flex-1">
+              <span class="inline-block text-xs font-bold px-2 py-1 rounded mb-2">{siteConfig.catLabels?.[article.data.category] || article.data.category}</span>
+              <h3 class="font-bold text-base mb-1">{article.data.title}</h3>
+              <p class="text-sm text-gray-500 line-clamp-2">{article.data.description}</p>
             </div>
-            <div class="download-group-item-content">
-              <a href="javascript:void(0)" onclick={btn.onClick}>
-                <div class="myButton">
-                  <img src={`/images/${btn.btnSvg}`} width="350" height="30" alt="下载" />
-                </div>
-              </a>
-            </div>
-          </div>
+          </a>
         ))}
       </div>
     </div>
+  </section>
 
-    <!-- ── Features 区 ── -->
-    <div class="introduce-container width">
-      <h2 class="introduce-title why_tg">
-        <img src="/images/TG2.svg" width="250" height="35" alt="" />
-      </h2>
-      <div class="introduce-main">
-        <div class="introduce-group">
-          {siteConfig.features.map((f, i) => (
-            <div class="introduce-group-item">
-              <div class="introduce-group-item-img-zone">
-                <div class={`introduce-group-item-img introduce-group-item-img-${i + 1}`}>
-                  <img class="img_gif" src={`/images/${f.gif}`} alt={f.title} loading="lazy" style="display:inline" />
-                </div>
-              </div>
-              <div class="introduce-group-item-title introduce_title_{i + 1}">{f.title}</div>
-              <h4 class="introduce-group-item-content">
-                <img src="/images/TT.svg" width="70" height="19" alt="" />
-                <span class={`introduce_${i + 1}`}> {f.desc}</span>
-              </h4>
-            </div>
-          ))}
-        </div>
-      </div>
+  <!-- ── FAQ ── -->
+  <section class="max-w-3xl mx-auto px-6 py-16">
+    <h2 class="text-3xl font-bold text-center mb-12" style={`color:${textPrimary}`}>常见问题</h2>
+    <div class="space-y-3">
+      <details class="bg-white rounded-xl p-5 border"><summary class="font-bold cursor-pointer">Bandicam 免费版和付费版有什么区别？</summary><p class="mt-3 text-gray-600 text-sm">免费版可录制最长 10 分钟，视频带水印。付费版去除所有限制：无限录制时长、无水印、支持计划录制、多音轨录制、实时绘图等高级功能。一次性购买永久使用。</p></details>
+      <details class="bg-white rounded-xl p-5 border"><summary class="font-bold cursor-pointer">Bandicam 怎么设置录制最高画质？</summary><p class="mt-3 text-gray-600 text-sm">视频格式选 H264 或 H265（文件更小），品质调至 100，FPS 设为 60，分辨率保持原始大小。开启硬件加速编码（NVENC/AMD VCE）进一步优化性能。</p></details>
+      <details class="bg-white rounded-xl p-5 border"><summary class="font-bold cursor-pointer">Bandicam 和 OBS 哪个好？</summary><p class="mt-3 text-gray-600 text-sm">新手推荐 Bandicam：一键录制、中文界面、上手快、性能消耗低。OBS 功能更强但配置复杂，适合需要多场景切换和直播推流的用户。</p></details>
+      <details class="bg-white rounded-xl p-5 border"><summary class="font-bold cursor-pointer">Bandicam 录制的视频文件太大怎么办？</summary><p class="mt-3 text-gray-600 text-sm">三个方法：1）改用 H265 编码器（文件减半）；2）降低品质值到 80-90，肉眼几乎无差别；3）降低 FPS 到 30（非游戏场景完全够用）。</p></details>
+      <details class="bg-white rounded-xl p-5 border"><summary class="font-bold cursor-pointer">Bandicam 怎么同时录系统声音和麦克风？</summary><p class="mt-3 text-gray-600 text-sm">在音频设置中选择"双音轨录制"，主音轨录制系统声音，副音轨录制麦克风。录制完成后用 Bandicut 或剪辑软件可分离编辑。</p></details>
+      <details class="bg-white rounded-xl p-5 border"><summary class="font-bold cursor-pointer">Bandicam 录游戏卡顿怎么办？</summary><p class="mt-3 text-gray-600 text-sm">优先开启硬件编码器（NVENC/AMD VCE），游戏内限制 FPS 到 60。如果仍卡，降低录制分辨率或关闭其他后台程序减轻系统负载。</p></details>
     </div>
+  </section>
 
-    <!-- ── 最新文章区 ── -->
-    <section class="articles">
-      <h2>最新教程</h2>
-      <div class="art-grid">
-        {sorted.map(article => {
-          const cat = article.data.category || 'guide';
-          return (
-            <a href={`/${article.id}/`} class="art-card">
-              <div class="art-card-body">
-                <span class={`art-tag ${cat}`}>{siteConfig.catLabels?.[cat] || article.data.category}</span>
-                <h3>{article.data.title}</h3>
-                <p>{article.data.description}</p>
-              </div>
-            </a>
-          );
-        })}
-      </div>
-      <div style="text-align:center;margin-top:32px">
-        <a href="/articles/" style={`display:inline-block;padding:12px 36px;background:${c.primary};color:#fff;border-radius:8px;font-size:15px;font-weight:600;text-decoration:none;transition:background .2s`}>查看全部教程 →</a>
-      </div>
-    </section>
+  <!-- ── 底部CTA ── -->
+  <section class="text-center text-white" style="background:linear-gradient(135deg,#BF360C,#E65100);padding:64px 24px">
+    <h2 class="text-3xl font-bold mb-4">开始录制你的第一个视频</h2>
+    <p class="text-lg opacity-80 mb-8 max-w-xl mx-auto">从下载到录制出高清视频，只需 3 分钟。</p>
+    <a href="https://www.bandicam.cn/screen-recorder" target="_blank" rel="nofollow noopener" class="inline-block bg-white text-orange-700 font-bold px-10 py-4 rounded-full text-lg hover:shadow-2xl transition">⬇ 免费下载 Bandicam</a>
+  </section>
 
-    <!-- ── 常见问题 FAQ ── -->
-    <section class="articles" style="padding-bottom:0">
-      <h2>常见问题</h2>
-      <div class="faq-list">
-        <div class="faq-item">
-          <div class="faq-q">Bandicam 免费版和付费版有什么区别？ <span class="faq-arrow">▼</span></div>
-          <div class="faq-a"><div class="faq-a-inner">免费版可录制最长 10 分钟，视频带水印。付费版去除所有限制：无限录制时长、无水印、支持计划录制、多音轨录制、实时绘图等高级功能。一次性购买永久使用。详见 <a href="/compare/bandicam-free-vs-paid/">Bandicam 免费版与付费版详细对比</a>。</div></div>
-        </div>
-        <div class="faq-item">
-          <div class="faq-q">Bandicam 怎么设置才能录制最高画质？ <span class="faq-arrow">▼</span></div>
-          <div class="faq-a"><div class="faq-a-inner">视频格式选 H264 或 H265（文件更小），品质调至 100，FPS 设为 60，分辨率保持原始大小。如果电脑配置高，可开启硬件加速编码。详见 <a href="/params/bandicam-best-quality-settings/">Bandicam 最高画质参数设置教程</a>。</div></div>
-        </div>
-        <div class="faq-item">
-          <div class="faq-q">Bandicam 和 OBS 哪个更好用？ <span class="faq-arrow">▼</span></div>
-          <div class="faq-a"><div class="faq-a-inner">新手推荐 Bandicam：一键录制、中文界面、上手快、性能消耗低。OBS 功能更强但配置复杂，适合需要多场景切换和直播推流的用户。详见 <a href="/compare/bandicam-vs-obs/">Bandicam vs OBS Studio 深度对比评测</a>。</div></div>
-        </div>
-        <div class="faq-item">
-          <div class="faq-q">Bandicam 录制的视频文件太大怎么办？ <span class="faq-arrow">▼</span></div>
-          <div class="faq-a"><div class="faq-a-inner">三个方法：1）改用 H265 编码器，同等画质文件减半；2）降低品质值到 80-90，肉眼几乎看不出差别；3）降低 FPS 到 30（非游戏场景完全够用）。详见 <a href="/params/bandicam-reduce-file-size/">Bandicam 减小视频文件大小完整教程</a>。</div></div>
-        </div>
-        <div class="faq-item">
-          <div class="faq-q">Bandicam 怎么同时录制系统声音和麦克风？ <span class="faq-arrow">▼</span></div>
-          <div class="faq-a"><div class="faq-a-inner">在音频设置中选择「双音轨录制」，主音轨录制系统声音，副音轨录制麦克风。录制完成后用 Bandicut 或剪辑软件可分离编辑两条音轨。详见 <a href="/params/bandicam-audio-settings/">Bandicam 音频设置与多音轨录制指南</a>。</div></div>
-        </div>
-        <div class="faq-item">
-          <div class="faq-q">Bandicam 录游戏卡顿怎么办？ <span class="faq-arrow">▼</span></div>
-          <div class="faq-a"><div class="faq-a-inner">优先开启「优先使用硬件编码器」，选择 H264(AMD VCE) 或 H264(NVIDIA NVENC) 对应你的显卡品牌。游戏内把 FPS 限制到 60，减少录制对游戏性能的影响。详见 <a href="/fix/bandicam-lag-fix/">Bandicam 录制卡顿终极解决方案</a>。</div></div>
-        </div>
-      </div>
-    </section>
-
-  </div>
-
-  <style set:html={pageCSS} />
+  <style>
+    .line-clamp-2 { display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+    details summary { list-style:none; }
+    details summary::-webkit-details-marker { display:none; }
+    details[open] summary { color:#E65100; }
+    table td, table th { min-width:80px; }
+  </style>
 </BaseLayout>
